@@ -12,6 +12,12 @@ router_v1.register(
     basename="users",
 )
 
+router_v1.register(
+    "workouts",
+    views.WorkoutViewSet,
+    basename="Workouts",
+)
+
 urlpatterns = [
     path("", include(router_v1.urls)),
     # path("", include("djoser.urls")),

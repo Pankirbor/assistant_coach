@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, WorkoutSerializer
 from .description_points import (
     user_list_endpoint,
     user_detail_endpoint,
@@ -9,6 +9,7 @@ from .description_points import (
     user_put_endpoint,
     user_delete_endpoint,
 )
+from workout.models import Workout
 from users.models import CustomUser
 
 
@@ -22,3 +23,8 @@ from users.models import CustomUser
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+
+
+class WorkoutViewSet(viewsets.ModelViewSet):
+    queryset = Workout.objects.all()
+    serializer_class = WorkoutSerializer
