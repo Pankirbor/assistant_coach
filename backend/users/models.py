@@ -25,5 +25,4 @@ class CustomUser(AbstractUser):
         verbose_name_plural = "Пользователи"
 
     def __str__(self):
-        full_name = self.get_full_name
-        return self.username if not full_name else full_name
+        return self.username

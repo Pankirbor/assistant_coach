@@ -99,7 +99,7 @@ class Workout(models.Model):
         verbose_name_plural = "Тренировки"
 
     def __str__(self):
-        return f"Тренировка с тегами {self.tags}"
+        return f"Тренировка для {self.user.username} на {self.date}"
 
 
 class TagWorkout(models.Model):
