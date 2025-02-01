@@ -15,7 +15,24 @@ router_v1.register(
 router_v1.register(
     "workouts",
     views.WorkoutViewSet,
-    basename="Workouts",
+    basename="workouts",
+)
+
+# router_v1.register(
+#     "sets",
+#     views.SetViewSet,
+#     basename="sets",
+# )
+
+router_v1.register(
+    "exercise-training-segment",
+    views.ExerciseTrainingSegmentViewSet,
+    basename="exercise",
+)
+router_v1.register(
+    "exercise-training-segment/(?P<ex_train_segment_id>[\d]+)/sets",
+    views.SetViewSet,
+    basename="sets",
 )
 
 urlpatterns = [
