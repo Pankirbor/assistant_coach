@@ -11,23 +11,18 @@ from .serializers import (
     SetCreateSerializer,
     ExerciseTrainingSegmentSerializer,
 )
-from .description_points import (
-    user_list_endpoint,
-    user_detail_endpoint,
-    user_create_endpoint,
-    user_put_endpoint,
-    user_delete_endpoint,
-)
+
+from . import description_points
 from workout.models import Set, Workout, ExerciseTrainingSegment
 from users.models import CustomUser
 
 
 @extend_schema_view(
-    list=extend_schema(**user_list_endpoint),
-    retrieve=extend_schema(**user_detail_endpoint),
-    create=extend_schema(**user_create_endpoint),
-    update=extend_schema(**user_put_endpoint),
-    destroy=extend_schema(**user_delete_endpoint),
+    list=extend_schema(**description_points.user_list_endpoint),
+    retrieve=extend_schema(**description_points.user_detail_endpoint),
+    create=extend_schema(**description_points.user_create_endpoint),
+    update=extend_schema(**description_points.user_put_endpoint),
+    destroy=extend_schema(**description_points.user_delete_endpoint),
 )
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -46,6 +41,14 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(**description_points.workouts_list_endpoint),
+    retrieve=extend_schema(**description_points.workouts_detail_endpoint),
+    create=extend_schema(**description_points.workouts_create_endpoint),
+    update=extend_schema(**description_points.workouts_update_endpoint),
+    destroy=extend_schema(**description_points.workouts_delete_endpoint),
+    partial_update=extend_schema(**description_points.workouts_patch_endpoint),
+)
 class WorkoutViewSet(viewsets.ModelViewSet):
     """
     Обеспечивает представление тренировок для выполнения CRUD операций.
@@ -61,7 +64,12 @@ class WorkoutViewSet(viewsets.ModelViewSet):
     queryset = Workout.objects.all()
     serializer_class = WorkoutSerializer
 
-    @action(methods=["get"], detail=False, url_path="next_workout")
+    @extend_schema(summary="Получение запланированой тренировки на сегодня.")
+    @action(
+        methods=["get"],
+        detail=False,
+        url_path="next_workout",
+    )
     def next_workout(self, request):
         """
         Возвращает последнюю запланированную тренировку пользователя.
@@ -75,11 +83,59 @@ class WorkoutViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+@extend_schema_view(
+    list=extend_schema(**description_points.exercise_training_segment_list_endpoint),
+    retrieve=extend_schema(
+        **description_points.exercise_training_segment_detail_endpoint
+    ),
+    create=extend_schema(
+        **description_points.exercise_training_segment_create_endpoint
+    ),
+    update=extend_schema(
+        **description_points.exercise_training_segment_update_endpoint
+    ),
+    destroy=extend_schema(
+        **description_points.exercise_training_segment_delete_endpoint
+    ),
+    partial_update=extend_schema(
+        **description_points.exercise_training_segment_patch_endpoint
+    ),
+)
 class ExerciseTrainingSegmentViewSet(viewsets.ModelViewSet):
+    """
+    Обеспечивает представление упражнений в контексте тренировок для выполнения CRUD операций.
+
+    Этот класс позволяет управлять упражнениями тренировок, включая:
+    - создание новых упражнений
+    - получение информации о конкретном упражнении
+    - обновление существующих упражнений
+    - удаление упражнений
+    """
+
     queryset = ExerciseTrainingSegment.objects.all()
     serializer_class = ExerciseTrainingSegmentSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        **description_points.exercise_training_segment_sets_list_endpoint
+    ),
+    retrieve=extend_schema(
+        **description_points.exercise_training_segment_sets_detail_endpoint
+    ),
+    create=extend_schema(
+        **description_points.exercise_training_segment_sets_create_endpoint
+    ),
+    update=extend_schema(
+        **description_points.exercise_training_segment_sets_update_endpoint
+    ),
+    destroy=extend_schema(
+        **description_points.exercise_training_segment_sets_delete_endpoint
+    ),
+    partial_update=extend_schema(
+        **description_points.exercise_training_segment_sets_patch_endpoint
+    ),
+)
 class SetViewSet(viewsets.ModelViewSet):
     """
     Обеспечивает представление сетов для выполнения CRUD операций.
