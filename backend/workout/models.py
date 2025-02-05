@@ -5,6 +5,13 @@ from users.models import CustomUser
 
 
 class Exercise(models.Model):
+    """
+    Модель упражнения.
+
+    Содержит информацию о упражнении, включая его название,
+    описание, ссылку на видео и связанные теги.
+    """
+
     name = models.CharField("Название", max_length=200)
     description = models.TextField("Описание", blank=True, null=True)
     video_link = models.CharField(
@@ -26,6 +33,14 @@ class Exercise(models.Model):
 
 
 class Tag(models.Model):
+    """
+    Модель тега.
+
+    Содержит информацию о тегах, включая название и слаг,
+    а также обеспечивает уникальность сочетания
+    имени и слага.
+    """
+
     name = models.CharField("Название", max_length=150)
     slug = models.SlugField(
         "слаг Тега",
@@ -46,6 +61,13 @@ class Tag(models.Model):
 
 
 class TagExercise(models.Model):
+    """
+    Связующая модель между упражнениями и тегами.
+
+    Эта модель позволяет реализовать связь многие-ко-многим
+    между моделями Exercise и Tag.
+    """
+
     tag = models.ForeignKey(
         Tag,
         on_delete=models.CASCADE,
@@ -72,6 +94,13 @@ class TagExercise(models.Model):
 
 
 class Workout(models.Model):
+    """
+    Модель тренировки.
+
+    Содержит информацию о тренировках, включая планируемую дату,
+    клиента, таймер и связанные с тренировкой теги.
+    """
+
     date = models.DateField("Дата тренировки", db_index=True)
     user = models.ForeignKey(
         CustomUser,
@@ -99,10 +128,19 @@ class Workout(models.Model):
         verbose_name_plural = "Тренировки"
 
     def __str__(self):
+        """Метод строкового представления модели"""
+
         return f"Тренировка для {self.user.username} на {self.date}"
 
 
 class TagWorkout(models.Model):
+    """
+    Связующая модель между тренировками и тегами.
+
+    Эта модель позволяет реализовать связь многие-ко-многим
+    между моделями Workout и Tag.
+    """
+
     tag = models.ForeignKey(
         Tag,
         on_delete=models.CASCADE,
@@ -129,6 +167,13 @@ class TagWorkout(models.Model):
 
 
 class TrainingSegment(models.Model):
+    """
+    Модель тренировочного блока.
+
+    Содержит информацию о тренировочном блоке, включая
+    связанную тренировку, таймер и список упражнений в блоке.
+    """
+
     workout = models.ForeignKey(
         Workout,
         related_name="training_segments",
@@ -160,6 +205,13 @@ class TrainingSegment(models.Model):
 
 
 class ExerciseTrainingSegment(models.Model):
+    """
+    Модель упражнения сегмента тренировки с упражнениями.
+
+    Содержит информацию об упражнениях, запланированных в блоке тренировки,
+    включая время, вес и количество повторений, а также статус выполнения.
+    """
+
     exercise = models.ForeignKey(
         Exercise,
         related_name="present_in_workouts",
@@ -215,9 +267,23 @@ class ExerciseTrainingSegment(models.Model):
         ]
 
     def __str__(self):
+        """
+        Возвращает строковое представление объекта.
+
+        Returns:
+            str: Форматированное строковое представление объекта
+            с указанием упражнения и блока тренировки.
+        """
         return f"Заданное {self.exercise} для блока {self.training_segment}"
 
     def update_best_result(self):
+        """
+        Обновляет лучший результат выполнения упражнения.
+
+        Устанавливает статус выполнения как завершенный,
+        вычисляет лучший результат среди всех результатов
+        тренировочного сегмента и сохраняет его.
+        """
         self.is_done = True
         best_result = self.results.aggregate(models.Max("actual_weight"))[
             "actual_weight__max"
@@ -227,6 +293,14 @@ class ExerciseTrainingSegment(models.Model):
 
 
 class Set(models.Model):
+    """
+    Модель подхода в тренировке.
+
+    Содержит информацию о конкретном подходе к упражнению,
+    включая фактический вес и количество повторений,
+    а также комментарии и статус последнего подхода.
+    """
+
     excercise = models.ForeignKey(
         ExerciseTrainingSegment, on_delete=models.CASCADE, related_name="results"
     )
@@ -261,9 +335,27 @@ class Set(models.Model):
         verbose_name_plural = "Подходы"
 
     def __str__(self):
+        """
+        Возвращает строковое представление объекта.
+
+        Returns:
+            str: Форматированное строковое представление объекта
+            с указанием названия упражнения.
+        """
         return f"Подход для {self.excercise.exercise.name}"
 
     def save(self, *args, **kwargs):
+        """
+        Сохраняет объект подхода в базе данных.
+
+        После сохранения проверяет, является ли подход последним,
+        и если да, то обновляет лучший результат в соответствующем
+        тренировочном сегменте.
+
+        Args:
+            *args: Позиционные аргументы для метода save.
+            **kwargs: Именованные аргументы для метода save.
+        """
         super().save(*args, **kwargs)
         if self.is_last:
             self.excercise.update_best_result()
