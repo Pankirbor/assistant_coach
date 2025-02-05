@@ -1,0 +1,13 @@
+services:
+    assistant_web:
+        build: ../backend
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+            [static_volume:/app/]
+        ports:
+            [8009:8000]
+        env_file:
+            ./.env.dev
+
+volumes:
+    static_volume:
