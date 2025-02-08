@@ -1,0 +1,83 @@
+.training-grid {
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 15px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 40px 300px repeat(auto-fit, 150px);
+  gap: 2px;
+  background: #ddd;
+}
+
+.grid-header {
+  background: #f0f0f0;
+  padding: 12px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.grid-item {
+  background: white;
+  padding: 10px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exercise {
+  justify-content: flex-start;
+  font-weight: bold;
+}
+
+.athlete-approach {
+  display: flex;
+  gap: 5px;
+  background: #f8f8f8;
+}
+
+input {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+.completed {
+  background: #dfffdf;
+  border-color: #7f7;
+}
+
+.check-button {
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background: white;
+  width: 25px;
+}
+
+.check-button.active {
+  background: #7f7;
+  border-color: #5a5;
+}
+
+.notes {
+  background: #f8f8f8;
+  padding: 10px 15px;
+  grid-column: 1 / -1;
+}
+
+.coach-note {
+  color: #2c3e50;
+}
+.athlete-note {
+  color: #7f8c8d;
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 30px 200px repeat(auto-fit, 80px);
+  }
+}
