@@ -15,7 +15,11 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "web",
+]
 
 
 # Application definition
@@ -28,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "api",
     "users",
     "workout",
@@ -37,6 +42,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -45,6 +51,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "assistant.urls"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Разрешить запросы от фронтенда
+]
 
 TEMPLATES = [
     {
@@ -128,4 +138,18 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API для организации занятий с тренером.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
 }

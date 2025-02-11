@@ -24,6 +24,7 @@ COPY . .
 # Шаг 6: Сборка приложения
 RUN npm run build
 
-EXPOSE 3000
+
+EXPOSE 80
 
 CMD ["npm", "start"]
