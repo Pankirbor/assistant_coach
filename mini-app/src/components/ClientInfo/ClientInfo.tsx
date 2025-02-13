@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./ClientInfo.css"
 
-// Типы для данных клиента
+//* Типы для данных клиента
 interface Client {
   id: number;
   telegram_id: number;
@@ -45,61 +46,32 @@ const ClientInfo: React.FC = () => {
   }
 
   return (
-    <div>
-      <h2>Информация о клиенте</h2>
-      <div>
-        <p>ID:</p>
-        <p>{client.id}</p>
+    <div className="container">
+      <h2 className="header" >Информация о клиенте</h2>
+      <div className="infoContainer">
+        <p className="label" >ID:</p>
+        <p className="value" >{client.id}</p>
 
-        <p>Telegram ID:</p>
-        <p>{client.telegram_id}</p>
+        <p className="label" >Telegram ID:</p>
+        <p className="value" >{client.telegram_id}</p>
 
-        <p>Имя пользователя:</p>
-        <p>{client.username}</p>
+        <p className="label" >Имя пользователя:</p>
+        <p className="value" >{client.username}</p>
 
-        <p>Имя:</p>
-        <p>{client.first_name || "Не указано"}</p>
+        <p className="label" >Имя:</p>
+        <p className="value" >{client.first_name || "Не указано"}</p>
 
-        <p>Фамилия:</p>
-        <p>{client.last_name || "Не указано"}</p>
+        <p className="label" >Фамилия:</p>
+        <p className="value" >{client.last_name || "Не указано"}</p>
 
-        <p>Email:</p>
-        <p>{client.email}</p>
+        <p className="label" >Email:</p>
+        <p className="value" >{client.email}</p>
       </div>
     </div>
   );
 };
 
-// Стили для компонента
-const styles = {
-  container: {
-    maxWidth: "600px",
-    margin: "0 auto",
-    padding: "20px",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    backgroundColor: "#f9f9f9",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  header: {
-    textAlign: "center",
-    color: "#333",
-    marginBottom: "20px",
-  },
-  infoContainer: {
-    display: "grid",
-    gridTemplateColumns: "1fr 2fr",
-    gap: "10px",
-  },
-  label: {
-    fontWeight: "bold",
-    color: "#555",
-    margin: "0",
-  },
-  value: {
-    margin: "0",
-    color: "#333",
-  },
-};
+
+
 
 export default ClientInfo;

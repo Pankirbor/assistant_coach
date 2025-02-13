@@ -1,179 +1,233 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 // import Workout from "../../mock.tsx";
 import "./style.css"
 import axios from "axios";
 
-// interface Exercise {
-//   id: number;
-//   name: string;
-//   sets: number;
-//   reps: number;
-//   weight: number;
-// }
 
-// interface Workout {
-//   id: number;
-//   title: string;
-//   date: string;
-//   exercises: Exercise[];
-// }
-
-// interface ExerciseResult {
-//   exerciseId: number;
-//   sets: {
-//     weight: number;
-//     reps: number;
-//   }[];
-// }
-
-const CurrentWorkout = () => {
-    const response = axios.get("/api/workouts/2")
-                        .then(response => response.data)
-                        .catch(error => console.error(error));
-    return (
-        <div>
-            <div>
-                <h1>Current Workout Data</h1>
-                <div>{JSON.stringify(response)}</div>
-            </div>
-        </div>
-      )
+//* Типы для данных клиента
+interface Client {
+  id: number;
+  telegram_id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
 }
+
+interface Tag {
+      id: number;
+      name: string;
+      slug: string;
+}
+
+interface Set {
+    target_weight: string;
+    terget_reps: number;
+    actual_weight: string;
+    actual_reps: number;
+    comment: string,
+    is_last: boolean;
+}
+
+interface Exercise {
+    id: number;
+    exercise_id: number;
+    name: string;
+    video_link: string;
+    timing: string;
+    target_weight: number;
+    target_reps: number;
+    target_sets: number;
+    general_order: number;
+    is_done: boolean;
+    comment: string;
+    client_comment: string;
+    best_result: string;
+    results: Set[]
+}
+
+interface TrainingSegments {
+      timing: string;
+      is_circle: boolean;
+      number_laps: number;
+      exercises: Exercise[];
+
+}
+
+interface Workout {
+  id: number;
+  date: string;
+  client: Client;
+  tags: Tag[];
+  timing: string;
+  training_segments: TrainingSegments[]
+}
+
+interface ExerciseResult {
+  exerciseId: number;
+  sets: {
+    weight: number;
+    reps: number;
+  }[];
+}
+
 // const CurrentWorkout = () => {
-//   const [workout, setWorkout] = useState<Workout | null>(null);
-//   const [results, setResults] = useState<ExerciseResult[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
+//     const response = axios.get("/api/workouts/2")
+//                         .then(response => response.data)
+//                         .catch(error => console.error(error));
+//     return (
+//         <div>
+//             <div>
+//                 <h1>Current Workout Data</h1>
+//                 <div>{JSON.stringify(response)}</div>
+//             </div>
+//         </div>
+//       )
+// }
+const CurrentWorkout = () => {
+    const [workout, setWorkout] = useState<Workout | null>(null);
+    const [results, setResults] = useState<ExerciseResult[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    console.log("This line run")
+  // Загрузка текущей тренировки
+  useEffect(() => {
+    const fetchWorkout = async () => {
+      try {
+        const response = await axios.get("/api/workouts/1");
+        setWorkout(response.data);
+        initializeResults(response.data.training_segments.map((segment:TrainingSegments) => segment.exercises).flat());
+      } catch (err) {
+        setError(`Не удалось загрузить тренировку ${err}`);
 
-//   // Загрузка текущей тренировки
-//   useEffect(() => {
-//     const fetchWorkout = async () => {
-//       try {
-//         const response = await axios.get("/api/workouts/1");
-//         console.log(response)
-//         setWorkout(response.data);
-//         initializeResults(response.data.exercises);
-//       } catch (err) {
-//         setError(`Не удалось загрузить тренировку ${err}`);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
+    fetchWorkout();
+  }, []);
 
-//     fetchWorkout();
-//   }, []);
+//?  interface Set {
+//?     target_weight: string;
+//?     terget_reps: number;
+//?     actual_weight: string;
+//?     actual_reps: number;
+//?     comment: string,
+//?     is_last: boolean;
+//? }
 
-//   // Инициализация структуры для результатов
-//   const initializeResults = (exercises: Exercise[]) => {
-//     const initialResults = exercises.map((exercise) => ({
-//       exerciseId: exercise.id,
-//       sets: Array(exercise.sets).fill({ weight: 0, reps: 0 }),
-//     }));
-//     setResults(initialResults);
-//   };
+  // Инициализация структуры для результатов
+  const initializeResults = (exercises: Exercise[]) => {
+    const initialResults = exercises.map((exercise) => ({
+      exerciseId: exercise.id,
+      sets: Array(exercise.target_sets).fill({ weight: 0, reps: 0 }),
+    }));
+    setResults(initialResults);
+  };
 
-//   // Обработчик изменения данных подхода
-//   const handleSetChange = (
-//     exerciseId: number,
-//     setIndex: number,
-//     field: "weight" | "reps",
-//     value: string
-//   ) => {
-//     setResults((prevResults) =>
-//       prevResults.map((exerciseResult) => {
-//         if (exerciseResult.exerciseId === exerciseId) {
-//           const newSets = [...exerciseResult.sets];
-//           newSets[setIndex] = {
-//             ...newSets[setIndex],
-//             [field]: Number(value),
-//           };
-//           return { ...exerciseResult, sets: newSets };
-//         }
-//         return exerciseResult;
-//       })
-//     );
-//   };
+  // Обработчик изменения данных подхода
+  const handleSetChange = (
+    exerciseId: number,
+    setIndex: number,
+    field: "weight" | "reps",
+    value: string
+  ) => {
+    setResults((prevResults) =>
+      prevResults.map((exerciseResult) => {
+        if (exerciseResult.exerciseId === exerciseId) {
+          const newSets = [...exerciseResult.sets];
+          newSets[setIndex] = {
+            ...newSets[setIndex],
+            [field]: Number(value),
+          };
+          return { ...exerciseResult, sets: newSets };
+        }
+        return exerciseResult;
+      })
+    );
+  };
 
-//   // Отправка результатов
-//   const handleSubmit = async () => {
-//     if (!workout) return;
+  //* Отправка результатов
+  const handleSubmit = async () => {
+    if (!workout) return;
 
-//     try {
-//       await axios.put(`/api/workout/${workout.id}`, {
-//         results: results,
-//       });
-//       alert("Результаты успешно сохранены!");
-//     } catch (err) {
-//       setError("Ошибка при сохранении результатов");
-//     }
-//   };
+    try {
+      await axios.put(`/api/workout/${workout.id}`, {
+        results: results,
+      });
+      alert("Результаты успешно сохранены!");
+    } catch (err) {
+      setError("Ошибка при сохранении результатов");
+    }
+  };
 
-//   if (loading) return <div>Загрузка...</div>;
-//   if (error) return <div>{error}</div>;
-//   if (!workout) return <div>Нет активных тренировок</div>;
+  if (loading) return <div>Загрузка...</div>;
+  if (error) return <div>{error}</div>;
+  if (!workout) return <div>Нет активных тренировок</div>;
 
-//   return (
-//     <div className="workout-container">
-//       <h2>{workout.title}</h2>
-//       <p>Дата: {new Date(workout.date).toLocaleDateString()}</p>
+  return (
+    <div className="workout-container">
+      <h2>{workout.tags.map((tag) => tag.name).join(", ")}</h2>
+      <p>Дата: {new Date(workout.date).toLocaleDateString()}</p>
+      <ol className="circle-list">
+        {workout.training_segments.map((segment) => segment.exercises.map((exercise, index) => (
+            <ExerciseForm
+            key={exercise.id}
+            exercise={exercise}
+            results={results[index]}
+            onSetChange={handleSetChange}
+            />
+        )))}
+      </ol>
+      <button onClick={handleSubmit} className="submit-button">
+        Готово
+      </button>
+    </div>
+  );
+};
 
-//       {workout.exercises.map((exercise, index) => (
-//         <ExerciseForm
-//           key={exercise.id}
-//           exercise={exercise}
-//           results={results[index]}
-//           onSetChange={handleSetChange}
-//         />
-//       ))}
-
-//       <button onClick={handleSubmit} className="submit-button">
-//         Готово
-//       </button>
-//     </div>
-//   );
-// };
-
-// Компонент для ввода результатов упражнения
-// const ExerciseForm: React.FC<{
-//   exercise: Exercise;
-//   results: ExerciseResult;
-//   onSetChange: (
-//     exerciseId: number,
-//     setIndex: number,
-//     field: "weight" | "reps",
-//     value: string
-//   ) => void;
-// }> = ({ exercise, results, onSetChange }) => {
-//   return (
-//     <div className="exercise-card">
-//       <h3>{exercise.name}</h3>
-//       <div className="sets-container">
-//         {results.sets.map((set, setIndex) => (
-//           <div key={setIndex} className="set-input-group">
-//             <span>Подход {setIndex + 1}</span>
-//             <input
-//               type="number"
-//               placeholder="Вес"
-//               value={set.weight || ""}
-//               onChange={(e) =>
-//                 onSetChange(exercise.id, setIndex, "weight", e.target.value)
-//               }
-//             />
-//             <input
-//               type="number"
-//               placeholder="Повторения"
-//               value={set.reps || ""}
-//               onChange={(e) =>
-//                 onSetChange(exercise.id, setIndex, "reps", e.target.value)
-//               }
-//             />
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
+//* Компонент для ввода результатов упражнения
+const ExerciseForm: React.FC<{
+  exercise: Exercise;
+  results: ExerciseResult;
+  onSetChange: (
+    exerciseId: number,
+    setIndex: number,
+    field: "weight" | "reps",
+    value: string
+  ) => void;
+}> = ({ exercise, results, onSetChange }) => {
+  return (
+    <li className="exercise-card">
+      <h3 className="exercise-name">{exercise.name}</h3>
+      <div className="sets-container">
+        {results.sets.map((set, setIndex) => (
+          <div key={setIndex} className="set-input-group">
+            <span>Подход {setIndex + 1}</span>
+            <p className="expected-result">{exercise.target_weight}*{exercise.target_reps}</p>
+            <input
+              type="number"
+              placeholder="Вес"
+              value={set.weight || ""}
+              onChange={(e) =>
+                onSetChange(exercise.id, setIndex, "weight", e.target.value)
+              }
+            />
+            <input
+              type="number"
+              placeholder="Повторения"
+              value={set.reps || ""}
+              onChange={(e) =>
+                onSetChange(exercise.id, setIndex, "reps", e.target.value)
+              }
+            />
+          </div>
+        ))}
+      </div>
+    </li>
+  );
+};
 
 
 
