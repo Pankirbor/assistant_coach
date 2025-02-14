@@ -96,6 +96,11 @@
 - Админка Django: http://localhost:8000/admin
     - Username: Coach
     - Password: 1234
+- Остановка контейнеров:
+    ```bash
+    cd infra/
+    sudo docker-compose down -v
+    ```
 
 ## Работа с фикстурами
 - Загрузка фикстур (образцов данных в таблицы базы):
@@ -114,17 +119,15 @@
     cd infra/
     sudo docker-compose down -v
     ```
+    - Выполните запуск по [инструкции](#бэкенд).
 
     - Выполните команду для выгрузки данных в фикстуру:
 
     ```bash
-    sudo docker-compose exec backend python manage.py dumpdata --indent 2 > ваш_файл_фикстур.json
-    ```
-    ***Например:***
-
-    ```bash
-
-    sudo docker-compose exec backend python manage.py dumpdata --indent 2 > backup_data.json
+    python manage.py dumpdata --indent 2 > backup_data.json
+    git add .
+    git commit -m "Update backup_data.json"
+    git push
     ```
 ## API
 - Подробная документация API доступна после запуска проекта по адресу:
@@ -180,13 +183,11 @@ http://localhost/api/docs/swagger.
 - Создайте файл `.env.dev` в папке `infra` с переменными окружения для `Django`, если он отсутствует:
 
 ```env
-DEBUG=1
-SECRET_KEY=секретный ключ Django
+SECRET_KEY=ваш-секретный-ключ
+DEBUG=True
 
 # Пока не реализовано:
 POSTGRES_DB=mydb
 POSTGRES_USER=myuser
 POSTGRES_PASSWORD=mypassword
-SECRET_KEY=ваш-секретный-ключ
-DEBUG=True
 ```
