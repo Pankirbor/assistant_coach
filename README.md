@@ -55,8 +55,8 @@
     - После первого запуска выполните миграции:
 
     ```bash
-    sudo docker-compose exec backend python manage.py makemigrations
-    sudo docker-compose exec backend python manage.py migrate
+    sudo docker-compose exec web python manage.py makemigrations
+    sudo docker-compose exec web python manage.py migrate
     ```
 5. **[Загрузите данные из фикстур](#работа-с-фикстурами)**
 6. **[Откройте приложение](#откройте-приложение-в-браузере)**
@@ -85,8 +85,8 @@
     - После первого запуска выполните миграции:
 
     ```bash
-    sudo docker-compose exec backend python manage.py makemigrations
-    sudo docker-compose exec backend python manage.py migrate
+    sudo docker-compose exec web python manage.py makemigrations
+    sudo docker-compose exec web python manage.py migrate
     ```
 5. **[Загрузите данные из фикстур](#работа-с-фикстурами)**
 
@@ -113,21 +113,73 @@
     sudo docker-compose exec web python manage.py loaddata backup_data.json
     ```
 
-- Выгрузка фикстур (если были добавлены данные, необходимо воспользоваться инструкцией запуска бекенда отдельно):
-    - Убедитесь, что контейнеры приложения остановлены.
-    ```bash
-    cd infra/
-    sudo docker-compose down -v
-    ```
-    - Выполните запуск по [инструкции](#бэкенд).
+- Выгрузка фикстур если были добавлены данные в базу:
+    - Выгрузка с запущенными контейнерами:
+        1. **Запустите контейнер**:
+            - Убедитесь, что ваш контейнер с приложением и базой данных запущен. Обычно это можно сделать с помощью команды:
 
-    - Выполните команду для выгрузки данных в фикстуру:
+            ```bash
+            docker-compose up -d
+            ```
 
-    ```bash
-    python manage.py dumpdata --indent 2 > backup_data.json
-    git add .
-    git commit -m "Update backup_data.json"
-    git push
+        2. **Запустите команду dumpdata внутри контейнера:**
+            - Используйте команду `exec` для выполнения команды `dumpdata` внутри вашего контейнера.
+
+            ```bash
+            # Эта команда создаст файл фиктуры my_fixture.json в директории fixtures вашего приложения внутри контейнера.
+            docker exec -it web python manage.py dumpdata myapp --output=/app/fixtures/my_fixture.json
+            ```
+
+
+
+        3. Проверьте наличие файла фиктуры:
+        - Убедитесь, что файл был создан успешно. Вы можете выполнить следующую команду, чтобы войти в контейнер и проверить наличие файла:
+            ```bash
+            docker exec -it web /bin/bash
+            ls /app/fixtures/
+            ```
+
+            - Вы должны увидеть my_fixture.json в списке.
+
+    - Теперь, когда файл фиктуры создан, вам нужно перенести его на локальный компьютер для сохранения в вашем репозитории. Для этого выполните следующие шаги:
+
+        1. Скопируйте файл фиктуры на локальный компьютер:
+            - Используйте команду:
+            ```bash
+            # Эта команда скопирует файл my_fixture.json в текущую директорию вашего локального компьютера.
+            docker cp web:/app/fixtures/my_fixture.json assistant_coach/backend/backup_data_v1.json
+            ```
+
+
+        2. Проверьте файл на локальном компьютере:
+            - Убедитесь, что файл был скопирован успешно, с помощью команды:
+            ```bash
+            ls -l ./my_fixture.json # Если файл отображается, значит, вы успешно переместили его на локальный компьютер.
+            ```
+
+
+        3. Добавьте файл в репозиторий:
+            - Теперь, когда файл на локальном компьютере, вы можете добавить его в свой репозиторий:
+            ```bash
+            git add .
+            git commit -m "Добавлены фиктуры"
+            git push
+            ```
+    - Выгрузка при работе бэкэндом не в контейнере:
+        - Убедитесь, что контейнеры приложения остановлены.
+        ```bash
+        cd infra/
+        sudo docker-compose down -v
+        ```
+        - Выполните запуск по [инструкции](#бэкенд).
+
+        - Выполните команду для выгрузки данных в фикстуру:
+
+        ```bash
+        python manage.py dumpdata --indent 2 > backup_data.json
+        git add .
+        git commit -m "Update backup_data.json"
+        git push
     ```
 ## API
 - Подробная документация API доступна после запуска проекта по адресу:
