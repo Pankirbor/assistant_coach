@@ -47,7 +47,7 @@
  - Перейдите в ветку `development`, затем папку `infra` и запустите контейнеры:
 
     ```bash
-    git checkout develop
+    git checkout development
     cd infra
     sudo docker-compose up --build
     ```
