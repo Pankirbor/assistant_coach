@@ -34,5 +34,6 @@ const gridList = css<UlProps>`
 export const Ul = styled.ul<UlProps>`
   margin: 0;
   padding: 0;
+  list-style: none;
   ${(props) => (props.$isGridList ? gridList : "")}
 `;

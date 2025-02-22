@@ -15,3 +15,5 @@ export const PageItemWrapper:React.FC <Props> = ({className, children}) => {
         <div className={className}> {children} </div>
     )
 }
+
+export default PageItemWrapper;
