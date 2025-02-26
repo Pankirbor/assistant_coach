@@ -1,11 +1,12 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {PageItemWrapper as SetItemWrapper} from "../helpers/PageItemWrapper.tsx";
 
-interface SetInputsProps {
-    $width?: string
+interface Props {
+    $width?: string;
+    $label?: boolean;
 }
 
-export const SetInput = styled.input<SetInputsProps>`
+export const SetInput = styled.input<Props>`
     width: ${(props)=> props.$width ? props.$width : "100px"};
     padding: 10px;
     font-size: ${(props)=>props.theme.fontSizeDefault};
@@ -32,4 +33,29 @@ export const Wrapper = styled(SetItemWrapper)`
     display: flex;
     flex-direction: ${(props)=>props.flexDirection ? props.flexDirection : "column"};
     align-items: ${(props)=>props.alignItems ? props.alignItems: "flex-start"};
+`
+
+const setLabel =  css`
+                &::before {
+                    content: "P.";
+                    display: inline-block;
+                    width: 16px;
+                    height: 16px;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                }
+        `
+
+export const SetText = styled.span<Props>`
+    color: ${(props) => props.theme.fontColorBlack};
+    font-size: ${(props)=>props.theme.fontSizeDefault};
+    padding: 0px 25px;
+    /* border: 1px solid green; */
+    width: ${(props)=> props.$width ? props.$width : "100px"};
+    margin-right: 10px;
+    margin-bottom: 5px;
+    margin-left: -17px;
+    position: relative;
+    ${(props)=> props.$label && setLabel}
 `

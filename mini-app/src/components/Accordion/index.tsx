@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Li, P, Ul } from '../styled/index.tsx';
 import { Content, ExerciseSetsOl, TitleExerciseButton } from '../pages/CurrentWorkoutPage/styles.tsx';
 import { Title } from '../ui/Title/styles.tsx';
-import { Set } from '../Set/index.tsx';
+import { Set, SetRead } from '../Set/index.tsx';
 
 
 interface SetResultProps {
@@ -25,6 +25,8 @@ interface SetResultProps {
 
 interface ExerciseResultProps {
   exerciseId: number;
+  targetWeight: number;
+  targetReps: number;
   sets: SetResultProps[];
 }
 
@@ -57,7 +59,7 @@ const AccordionExerciseItem: React.FC<AccordionItemProps> = ({ title, content, o
 
       <ExerciseSetsOl style={{height : contentHeight}}>
         <Content ref={contentRef}>
-          <P>P.  20 30</P>
+          <SetRead targetWeight={content.targetWeight} targetReps={content.targetReps}/>
           {content.sets.map((set, setIndex)=> (
               <Li key={setIndex}>
                 <Set

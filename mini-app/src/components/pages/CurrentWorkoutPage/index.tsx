@@ -78,7 +78,7 @@ export const CurrentWorkoutPage:React.FC= () => {
     useEffect(() => {
         const fetchWorkout = async () => {
         try {
-            const response = await axios.get("/api/workouts/3");
+            const response = await axios.get("/api/workouts/1");
             setWorkout(response.data);
             initializeResults(response.data.training_segments.map((segment:TrainingSegmentsProps) => segment.exercises).flat());
         } catch (err) {
@@ -96,7 +96,16 @@ export const CurrentWorkoutPage:React.FC= () => {
     const initializeResults = (exercises: ExerciseProps[]) => {
         const initialResults = exercises.map((exercise) => ({
         exerciseId: exercise.id,
-        sets: Array(exercise.target_sets).fill({ actual_weight: 0, actual_reps: 0 }),
+        sets: Array(exercise.target_sets).fill(
+          {
+            target_weight: exercise.target_weight,
+            terget_reps: exercise.target_sets,
+            comment: "",
+            is_last: false,
+            actual_weight: 0,
+            actual_reps: 0
+          }
+        ),
         }));
         setResults(initialResults);
     };
@@ -114,7 +123,7 @@ export const CurrentWorkoutPage:React.FC= () => {
             const newSets = [...exerciseResult.sets];
             newSets[setIndex] = {
               ...newSets[setIndex],
-              [field]: Number(value),
+              [field]: Number(value), //* добавить обработку для is_last
             };
             return { ...exerciseResult, sets: newSets };
           }
@@ -141,10 +150,10 @@ export const CurrentWorkoutPage:React.FC= () => {
     if (error) return <div>{error}</div>;
     if (!workout) return <div>Нет активных тренировок</div>;
 
-    const items = workout.training_segments.map((segment) => segment.exercises.map((exercise, index) => {
+    const items = workout.training_segments.map((segment) => segment.exercises.map((exercise: ExerciseProps, index) => {
                       return {
                         title: exercise.name,
-                        content: results[index],
+                        content: {...results[index], "targetWeight": exercise.target_weight, "targetReps": exercise.target_reps},
                         onSetChange: handleSetChange,
                       }
                     })).flat();
