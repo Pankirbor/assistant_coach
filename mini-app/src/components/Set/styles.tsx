@@ -25,7 +25,7 @@ export const SetInput = styled.input<SetInputsProps>`
     }
 
     &::placeholder {
-        color: ${(props)=>props.theme.backgroundColorGray};
+        color: ${(props)=>props.theme.backgroundColorBlue};
     }
 `
 export const Wrapper = styled(SetItemWrapper)`

@@ -1,50 +1,34 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { SetInput, Wrapper } from "./styles.tsx";
 
-interface Set {
+interface SetResultProps {
   actual_weight: number | string;
   actual_reps: number | string;
 }
 
-interface Exercise {
-    id: number;
-    exercise_id: number;
-    name: string;
-    video_link: string;
-    timing: string;
-    target_weight: number;
-    target_reps: number;
-    target_sets: number;
-    general_order: number;
-    is_done: boolean;
-    comment: string;
-    client_comment: string;
-    best_result: string;
-    results: Set[]
-}
 
 interface SetProps {
-  exercise: Exercise;
-  set: Set;
+  exerciseId: number;
+  set: SetResultProps;
   setIndex: number;
-  onSetChange: (exerciseId: number, setIndex: number, field: keyof Set, value: string) => void;
+  onSetChange: (exerciseId: number, setIndex: number, field: string, value: string) => void;
 }
 
-export const Set:React.FC <SetProps> = ({exercise, set, setIndex, onSetChange}) => {
+export const Set:React.FC <SetProps> = ({exerciseId, set, setIndex, onSetChange}) => {
     return (
         <Wrapper flexDirection="row" alignItems="center">
             <SetInput
                 type="number"
                 placeholder="Вес"
                 value={set.actual_weight || " "}
-                onChange={(e)=>{onSetChange(exercise.id, setIndex, "actual_weight", e.target.value)}}
+                onChange={(e)=>{onSetChange(exerciseId, setIndex, "actual_weight", e.target.value)}}
             />
             <SetInput
                 $width="70px"
                 type="number"
-                placeholder="Повторения"
+                placeholder="Кол-во"
                 value={set.actual_reps || " "}
-                onChange={(e)=>{onSetChange(exercise.id, setIndex, "actual_reps", e.target.value)}}
+                onChange={(e)=>{onSetChange(exerciseId, setIndex, "actual_reps", e.target.value)}}
             />
 
         </Wrapper>

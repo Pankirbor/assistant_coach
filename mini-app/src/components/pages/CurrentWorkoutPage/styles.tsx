@@ -1,6 +1,17 @@
 import styled from "styled-components";
 import { Ol, Section } from "../../styled/index.tsx";
 import {PageItemWrapper as WorkoutItemWrapper} from "../../helpers/PageItemWrapper.tsx";
+import { Button as WorkoutButton } from "../../ui/Button/index.tsx";
+import arrowIcon from "../../../assets/images/arrowIcon.svg"
+
+export const StyledWorkoutButton = styled(WorkoutButton)`
+    border-radius: 99px;
+    /* padding: 10px; */
+    width: 178px;
+    /* height: 46px; */
+    box-shadow: 0 10px 22px 0 rgba(149, 173, 254, 0.3);
+    background-color: ${(props) =>`linear-gradient(317deg, ${props.theme.buttonColor} 0%, #9dceff 100%)`};
+`
 
 
 export const Workout = styled(Section)`
@@ -20,30 +31,42 @@ export const Wrapper = styled(WorkoutItemWrapper)`
     align-items: ${(props)=>props.alignItems ? props.alignItems: "flex-start"};
 `
 interface TitleExerciseButtonProps {
-    isActive?: boolean;
+    isOpen?: boolean;
     onClick?: () => void;
 }
 
 export const TitleExerciseButton = styled.button<TitleExerciseButtonProps>`
-    width: 100%;
+    position: relative;
+    min-width: 327px;
     text-align: left;
     padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 20px;
     padding-right: 20px;
     border: none;
-  cursor: ${(props) => (props.isActive ? "auto" : "pointer")};
+    cursor: ${(props) => (props.isOpen ? "auto" : "pointer")};
     box-shadow: none;
-    display: block;
+    display: flex;
     font-size: 16px;
     background-color: ${(props)=>props.theme.colorWhite};
+    box-sizing: border-box;
 
-    &:after {
-        content: '\002B';
+    &::after {
+        position: absolute;
+        top: 20px;
+        right: 15px;
+        content: ' ';
         color: #777;
         font-weight: bold;
         float: right;
-        /* margin-left: 5px; */
+        width: 5px;
+        height: 8px;
+        /* background-color: green; */
+        margin: auto;
+        background-image: url(${arrowIcon});
+        background-repeat: no-repeat;
+        transform: ${(props)=> props.isOpen ? "rotate(-90deg)" : "rotate(90deg)"};
+        transition: transform 0.2s;
     }
 `
 export const ExerciseSetsOl = styled(Ol)`

@@ -8,7 +8,7 @@ export const StyledButton = styled.a<StyledButtonProps>`
     display: block;
     min-height: 60px;
     padding: 0 15px;
-    max-width: 100px;
+    max-width: 315px;
     min-width: ${(props) => props.$maxWidth ? "100%" : "50px"};
     font-size: ${(props) => props.theme.fontSizeDefault};
     font-weight: bold;
@@ -28,7 +28,7 @@ export const StyledButton = styled.a<StyledButtonProps>`
     &:hover,
     &:active {
         background-color: ${(props) => props.theme.buttonColorHoverActive};
-        box-shadow: inset 0 4px 0 rgba(0, 0, 0, 0.14);
+        box-shadow:  0 4px 0 rgba(0, 0, 0, 0.14);
     }
 
     &:active {

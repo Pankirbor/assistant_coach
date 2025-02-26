@@ -5,6 +5,7 @@ import React, { ReactNode } from "react";
 import { Main } from "./styles.tsx";
 import { CurrentWorkoutPage } from "../../pages/CurrentWorkoutPage/index.tsx";
 
+
 interface Props {
     children: ReactNode;
     features?: ReactNode;
