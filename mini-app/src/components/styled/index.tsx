@@ -1,0 +1,5 @@
+export {Li} from "./Li/styles.tsx"
+export {Ol} from "./Ol/styles.tsx"
+export {Ul} from "./Ul/styles.tsx"
+export {P} from "./P/styles.tsx"
+export {Section} from "./Section/styles.tsx"
