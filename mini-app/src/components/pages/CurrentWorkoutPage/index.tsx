@@ -3,70 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Title } from "../../ui/Title/styles.tsx";
 import { Workout, Wrapper, StyledWorkoutButton } from "./styles.tsx";
 import Accordion from "../../Accordion/index.tsx";
+import { Header } from "../../layout/Header/index.tsx";
+import type { WorkoutProps, ExerciseProps, ExerciseResultProps, TrainingSegmentsProps } from "../../../types/data/dataTypes.ts";
 
-//* Типы для данных клиента
-interface ClientProps {
-  id: number;
-  telegram_id: number;
-  username: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-}
-
-interface TagProps {
-      id: number;
-      name: string;
-      slug: string;
-}
-
-interface SetProps {
-    target_weight?: string;
-    terget_reps?: number;
-    actual_weight: string | number;
-    actual_reps: string | number;
-    comment?: string,
-    is_last?: boolean;
-}
-
-interface ExerciseProps {
-    id: number;
-    exercise_id: number;
-    name: string;
-    video_link: string;
-    timing: string;
-    target_weight: number;
-    target_reps: number;
-    target_sets: number;
-    general_order: number;
-    is_done: boolean;
-    comment: string;
-    client_comment: string;
-    best_result: string;
-    results: SetProps[]
-}
-
-interface TrainingSegmentsProps {
-      timing: string;
-      is_circle: boolean;
-      number_laps: number;
-      exercises: ExerciseProps[];
-
-}
-
-interface WorkoutProps {
-  id: number;
-  date: string;
-  client: ClientProps;
-  tags: TagProps[];
-  timing: string;
-  training_segments: TrainingSegmentsProps[]
-}
-
-interface ExerciseResultProps {
-  exerciseId: number;
-  sets: SetProps[];
-}
 
 export const CurrentWorkoutPage:React.FC= () => {
     const [workout, setWorkout] = useState<WorkoutProps | null>(null);
@@ -78,7 +17,7 @@ export const CurrentWorkoutPage:React.FC= () => {
     useEffect(() => {
         const fetchWorkout = async () => {
         try {
-            const response = await axios.get("/api/workouts/1");
+            const response = await axios.get("/api/workouts/2");
             setWorkout(response.data);
             initializeResults(response.data.training_segments.map((segment:TrainingSegmentsProps) => segment.exercises).flat());
         } catch (err) {
@@ -161,10 +100,13 @@ export const CurrentWorkoutPage:React.FC= () => {
     return (
         <>
             <Workout>
+              {/* <Header title={"Current Workout"}/> */}
+              <Wrapper>
                 <Title marginBottom="30" size="big">{workout.tags.map((tag) => tag.name).join(", ")}</Title>
                 <Wrapper>
                   <Accordion items={items} />
                 </Wrapper>
+              </Wrapper>
                 <StyledWorkoutButton >Завершить</StyledWorkoutButton>
             </Workout>
         </>

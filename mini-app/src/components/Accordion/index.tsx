@@ -15,14 +15,6 @@ interface SetResultProps {
 }
 
 
-// interface ExerciseResultProps {
-//   exerciseId: number;
-//   sets: {
-//     actual_weight: string | number;
-//     actual_reps: string | number;
-//   }[];
-// }
-
 interface ExerciseResultProps {
   exerciseId: number;
   targetWeight: number;
