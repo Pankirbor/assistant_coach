@@ -25,8 +25,7 @@ export const StyledButton = styled.a<StyledButtonProps>`
     box-sizing: border-box;
     font-family: ${(props) => props.theme.fontFamily};
 
-    &:hover,
-    &:active {
+    &:hover {
         background-color: ${(props) => props.theme.buttonColorHoverActive};
         box-shadow:  0 4px 0 rgba(0, 0, 0, 0.14);
     }

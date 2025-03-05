@@ -39,10 +39,7 @@ export const TitleExerciseButton = styled.button<TitleExerciseButtonProps>`
     position: relative;
     min-width: 327px;
     text-align: left;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 10px 20px;
     border: none;
     cursor: ${(props) => (props.isOpen ? "auto" : "pointer")};
     box-shadow: none;

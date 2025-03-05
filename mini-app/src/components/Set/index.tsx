@@ -1,9 +1,13 @@
-import React from "react";
-import { SetInput, SetText, Wrapper } from "./styles.tsx";
+import React, { useState } from "react";
+import { KgLabel, SetInput, SetText, Wrapper } from "./styles.tsx";
 
 interface SetResultProps {
-  actual_weight: number | string;
-  actual_reps: number | string;
+    target_weight?: string;
+    terget_reps?: number;
+    actual_weight: string | number;
+    actual_reps: string |number;
+    comment?: string,
+    is_last?: boolean;
 }
 
 interface SetReadProps {
@@ -20,14 +24,23 @@ interface SetProps {
 }
 
 export const Set:React.FC <SetProps> = ({exerciseId, set, setIndex, onSetChange}) => {
+    const [weight, setWeight] = useState(set.target_weight);
+
+    const handleSetWeight = (event) => {
+        setWeight(event.target.value);
+        onSetChange(exerciseId, setIndex, "actual_weight", event.target.value)
+    }
     return (
         <Wrapper flexDirection="row" alignItems="center">
-            <SetInput
-                type="number"
-                placeholder="Вес"
-                value={set.actual_weight || " "}
-                onChange={(e)=>{onSetChange(exerciseId, setIndex, "actual_weight", e.target.value)}}
-            />
+            <Wrapper flexDirection="row">
+                <SetInput
+                    type="number"
+                    value={weight}
+                    onChange={handleSetWeight}
+                    $isWeight
+                />
+                <KgLabel>кг</KgLabel>
+            </Wrapper>
             <SetInput
                 $width="70px"
                 type="number"
@@ -43,8 +56,11 @@ export const Set:React.FC <SetProps> = ({exerciseId, set, setIndex, onSetChange}
 export const SetRead:React.FC <SetReadProps> = ({targetWeight, targetReps}) => {
     return (
         <Wrapper flexDirection="row" alignItems="center">
-            <SetText $label> {targetWeight} кг</SetText>
-            <SetText $width="70px"> {targetReps} раз(а)</SetText>
+            <Wrapper flexDirection="row">
+                <SetText $label $width="60px"> {targetWeight}</SetText>
+                <KgLabel right="-2px">кг</KgLabel>
+            </Wrapper>
+            <SetText $width="80px"> {targetReps}-{targetReps}  раз(а)</SetText>
         </Wrapper>
     )
 }
