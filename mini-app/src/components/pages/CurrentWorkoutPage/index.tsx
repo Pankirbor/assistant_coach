@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Title } from "../../ui/Title/styles.tsx";
-import { Workout, Wrapper, StyledWorkoutButton } from "./styles.tsx";
+import { Workout, Wrapper, StyledWorkoutButton, WarmCard } from "./styles.tsx";
 import Accordion from "../../Accordion/index.tsx";
-import { Header } from "../../layout/Header/index.tsx";
-import type { WorkoutProps, ExerciseProps, ExerciseResultProps, TrainingSegmentsProps } from "../../../types/data/dataTypes.ts";
+// import { Header } from "../../layout/Header/index.tsx";
+import type { WorkoutProps, ExerciseProps, ExerciseResultProps, TrainingSegmentsProps} from "../../../types/data/dataTypes.ts";
+import { P } from "../../styled/index.tsx";
+
 
 
 export const CurrentWorkoutPage:React.FC= () => {
@@ -30,6 +32,11 @@ export const CurrentWorkoutPage:React.FC= () => {
 
         fetchWorkout();
     }, []);
+
+    useEffect(()=>{
+      console.log(workout)
+      console.log("workout")
+    });
 
     // Инициализация структуры для результатов
     const initializeResults = (exercises: ExerciseProps[]) => {
@@ -76,10 +83,11 @@ export const CurrentWorkoutPage:React.FC= () => {
       if (!workout) return;
 
       try {
-        await axios.put(`/api/workout/${workout.id}`, {
-          results: results,
-        });
-        alert("Результаты успешно сохранены!");
+        // await axios.put(`/api/workout/${workout.id}`, {
+        //   results: results,
+        // });
+        console.log({results: results})
+        alert(`${JSON.stringify({results: results})}` );
       } catch (err) {
         setError("Ошибка при сохранении результатов");
       }
@@ -88,6 +96,7 @@ export const CurrentWorkoutPage:React.FC= () => {
     if (loading) return <div>Загрузка...</div>;
     if (error) return <div>{error}</div>;
     if (!workout) return <div>Нет активных тренировок</div>;
+    alert(`${JSON.stringify(workout)}` );
 
     const items = workout.training_segments.map((segment) => segment.exercises.map((exercise: ExerciseProps, index) => {
                       return {
@@ -103,11 +112,16 @@ export const CurrentWorkoutPage:React.FC= () => {
               {/* <Header title={"Current Workout"}/> */}
               <Wrapper>
                 <Title marginBottom="30" size="big">{workout.tags.map((tag) => tag.name).join(", ")}</Title>
+                <WarmCard>
+                  <P>Необходимо сделать два разминочных подхода:</P>
+                  <P>1. 25% от рабочего веса</P>
+                  <P>2. 50% от рабочего веса</P>
+                </WarmCard>
                 <Wrapper>
                   <Accordion items={items} />
                 </Wrapper>
               </Wrapper>
-                <StyledWorkoutButton >Завершить</StyledWorkoutButton>
+                <StyledWorkoutButton onClick={handleSubmit}>Завершить</StyledWorkoutButton>
             </Workout>
         </>
     )

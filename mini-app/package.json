@@ -37,5 +37,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://web:8000/"
+  "proxy": "http://web:8000/",
+  "devDependencies": {
+    "@gravity-ui/uikit": "^7.5.0"
+  }
 }

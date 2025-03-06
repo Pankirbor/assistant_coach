@@ -30,6 +30,19 @@ export const Wrapper = styled(WorkoutItemWrapper)`
     flex-direction: ${(props)=>props.flexDirection ? props.flexDirection : "column"};
     align-items: ${(props)=>props.alignItems ? props.alignItems: "flex-start"};
 `
+
+export const WarmCard = styled(Wrapper)`
+    /* border: 1px solid red; */
+    margin-bottom: 15px;
+    border-radius: 15px;
+    padding: 5px 10px;
+    width: 250px;
+    /* height: 40px; */
+    background: linear-gradient(135deg, #FF617A, #FF8093);
+    /* color: #7F7F7F; */
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+`
 interface TitleExerciseButtonProps {
     isOpen?: boolean;
     onClick?: () => void;
