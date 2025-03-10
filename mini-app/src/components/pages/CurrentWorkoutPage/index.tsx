@@ -48,7 +48,7 @@ export const CurrentWorkoutPage:React.FC= () => {
             terget_reps: exercise.target_sets,
             comment: "",
             is_last: false,
-            actual_weight: 0,
+            actual_weight: exercise.target_weight,
             actual_reps: 0
           }
         ),
@@ -71,7 +71,7 @@ export const CurrentWorkoutPage:React.FC= () => {
               ...newSets[setIndex],
               [field]: Number(value), //* добавить обработку для is_last
             };
-            return { ...exerciseResult, sets: newSets };
+            return { ...exerciseResult, sets: newSets};
           }
           return exerciseResult;
         })
@@ -86,8 +86,21 @@ export const CurrentWorkoutPage:React.FC= () => {
         // await axios.put(`/api/workout/${workout.id}`, {
         //   results: results,
         // });
-        console.log({results: results})
-        alert(`${JSON.stringify({results: results})}` );
+        const finalResult = results.reduce((acc, result) => {
+          acc.set(result.exerciseId, result.sets)
+          return acc
+        }, new Map())
+        workout.training_segments.forEach(segment => {
+          segment.exercises.forEach(
+            exersice => {
+              exersice.results = [...finalResult.get(exersice.id)]
+            }
+          );
+        });
+        console.log(finalResult);
+        console.log(workout);
+        console.log(JSON.stringify(workout));
+        // alert(`${JSON.stringify({results: results})}` );
       } catch (err) {
         setError("Ошибка при сохранении результатов");
       }
@@ -96,7 +109,6 @@ export const CurrentWorkoutPage:React.FC= () => {
     if (loading) return <div>Загрузка...</div>;
     if (error) return <div>{error}</div>;
     if (!workout) return <div>Нет активных тренировок</div>;
-    alert(`${JSON.stringify(workout)}` );
 
     const items = workout.training_segments.map((segment) => segment.exercises.map((exercise: ExerciseProps, index) => {
                       return {

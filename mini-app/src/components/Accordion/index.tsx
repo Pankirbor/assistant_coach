@@ -15,17 +15,17 @@ interface SetResultProps {
 }
 
 
-interface ExerciseResultProps {
+interface ContentProps {
   exerciseId: number;
   targetWeight: number;
   targetReps: number;
-  sets: SetResultProps[];
+  sets: SetResultProps[]
 }
 
 
 interface AccordionItemProps {
   title: string;
-  content: ExerciseResultProps;
+  content: ContentProps;
   onSetChange: (exerciseId: number, setIndex: number, field: string, value: string) => void;
 }
 
