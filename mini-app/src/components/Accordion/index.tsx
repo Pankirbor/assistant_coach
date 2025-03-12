@@ -22,11 +22,17 @@ interface ContentProps {
   sets: SetResultProps[]
 }
 
+interface OnSetChangeParams {
+  exerciseId: number;
+  setIndex: number;
+  field: string;
+  value: string;
+}
 
 interface AccordionItemProps {
   title: string;
   content: ContentProps;
-  onSetChange: (exerciseId: number, setIndex: number, field: string, value: string) => void;
+  onSetChange: (...OnSetChangeParams) => void;
 }
 
 interface AccordionProps {

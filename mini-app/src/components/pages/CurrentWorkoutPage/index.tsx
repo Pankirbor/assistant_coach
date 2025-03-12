@@ -3,7 +3,6 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Title } from "../../ui/Title/styles.tsx";
 import { Workout, Wrapper, StyledWorkoutButton, WarmCard } from "./styles.tsx";
 import Accordion from "../../Accordion/index.tsx";
-// import { Header } from "../../layout/Header/index.tsx";
 import type { WorkoutProps, ExerciseProps, ExerciseResultProps, TrainingSegmentsProps} from "../../../types/data/dataTypes.ts";
 import { P } from "../../styled/index.tsx";
 
@@ -100,7 +99,6 @@ export const CurrentWorkoutPage:React.FC= () => {
         console.log(finalResult);
         console.log(workout);
         console.log(JSON.stringify(workout));
-        // alert(`${JSON.stringify({results: results})}` );
       } catch (err) {
         setError("Ошибка при сохранении результатов");
       }
@@ -131,7 +129,6 @@ export const CurrentWorkoutPage:React.FC= () => {
     return (
         <>
             <Workout>
-              {/* <Header title={"Current Workout"}/> */}
               <Wrapper>
                 <Title marginBottom="30" size="big">{workout.tags.map((tag) => tag.name).join(", ")}</Title>
                 <WarmCard>

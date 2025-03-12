@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { KgLabel, SetInput, SetText, Wrapper } from "./styles.tsx";
+import { SetProps as SetResultProps} from "../../types/data/dataTypes.ts";
 
-interface SetResultProps {
-    target_weight?: string;
-    terget_reps?: number;
-    actual_weight: string | number;
-    actual_reps: string |number;
-    comment?: string,
-    is_last?: boolean;
-}
 
 interface SetReadProps {
   targetWeight: number | string;
   targetReps: number | string;
+}
+
+interface OnSetChangeParams {
+  exerciseId: number;
+  setIndex: number;
+  field: string;
+  value: string;
 }
 
 
@@ -20,7 +20,7 @@ interface SetProps {
   exerciseId: number;
   set: SetResultProps;
   setIndex: number;
-  onSetChange: (exerciseId: number, setIndex: number, field: string, value: string) => void;
+  onSetChange: (...OnSetChangeParams) => void;
 }
 
 export const Set:React.FC <SetProps> = ({exerciseId, set, setIndex, onSetChange}) => {
