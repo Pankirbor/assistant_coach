@@ -32,14 +32,11 @@ export const Wrapper = styled(WorkoutItemWrapper)`
 `
 
 export const WarmCard = styled(Wrapper)`
-    /* border: 1px solid red; */
     margin-bottom: 15px;
     border-radius: 15px;
     padding: 5px 10px;
     width: 250px;
-    /* height: 40px; */
     background: linear-gradient(135deg, #FF617A, #FF8093);
-    /* color: #7F7F7F; */
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
     font-size: 12px;
 `
@@ -71,7 +68,6 @@ export const TitleExerciseButton = styled.button<TitleExerciseButtonProps>`
         float: right;
         width: 5px;
         height: 8px;
-        /* background-color: green; */
         margin: auto;
         background-image: url(${arrowIcon});
         background-repeat: no-repeat;
@@ -81,7 +77,6 @@ export const TitleExerciseButton = styled.button<TitleExerciseButtonProps>`
 `
 export const ExerciseSetsOl = styled(Ol)`
     position: relative;
-    /* border: 1px solid green; */
     height: 0px;
     overflow: hidden;
     word-wrap: 100%;
@@ -93,7 +88,6 @@ export const Content = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  /* border: 1px solid #ddd; */
   padding: ${(props) => props.theme.indent};
   line-height: 1.5;
   font-size: 16px;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Title } from "../../ui/Title/styles.tsx";
 import { Workout, Wrapper, StyledWorkoutButton, WarmCard } from "./styles.tsx";
 import Accordion from "../../Accordion/index.tsx";
@@ -106,17 +106,27 @@ export const CurrentWorkoutPage:React.FC= () => {
       }
     };
 
+    const items = useMemo(() => {
+      if (!workout) {
+        return [];
+      }
+
+      return workout.training_segments
+        .map((segment) => segment.exercises
+          .map((exercise: ExerciseProps, index) => {
+                return {title: exercise.name,
+                        content: {...results[index], "targetWeight": exercise.target_weight, "targetReps": exercise.target_reps},
+                        onSetChange: handleSetChange,
+                      }
+                })
+        )
+        .flat();
+    }, [workout, results, handleSetChange]);
+
     if (loading) return <div>Загрузка...</div>;
     if (error) return <div>{error}</div>;
     if (!workout) return <div>Нет активных тренировок</div>;
 
-    const items = workout.training_segments.map((segment) => segment.exercises.map((exercise: ExerciseProps, index) => {
-                      return {
-                        title: exercise.name,
-                        content: {...results[index], "targetWeight": exercise.target_weight, "targetReps": exercise.target_reps},
-                        onSetChange: handleSetChange,
-                      }
-                    })).flat();
 
     return (
         <>
