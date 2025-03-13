@@ -11,10 +11,8 @@ interface Props {
 export const SetInput = styled.input<Props>`
     width: ${(props)=> props.$width ? props.$width : "100px"};
     padding: 10px;
-    /* padding-right: ${(props)=> props.$isWeight ? "16px" : "10px"}; */
     font-size: ${(props)=>props.theme.fontSizeDefault};
     border: none;
-    /* border-color: ${(props)=>props.theme.backgroundColorBlue}; */
     border-radius: 8px;
     background-color: ${(props)=>props.theme.inputBackgroundColor};
     color: ${(props)=>props.theme.fontColorBlack};
@@ -25,7 +23,6 @@ export const SetInput = styled.input<Props>`
     position: relative;
 
     &:focus {
-        /* border-color: ${(props)=>props.theme.backgroundColorBlueDark}; */
         box-shadow: 0 0 5px rgba(127, 140, 141, 0.5)
     }
 
@@ -68,7 +65,6 @@ export const SetText = styled.span<Props>`
     font-size: ${(props)=>props.theme.fontSizeDefault};
     padding: 0px 10px;
     padding-left: ${(props)=> props.$label ? "35px" : "10px"};
-    /* border: 1px solid green; */
     width: ${(props)=> props.$width ? props.$width : "100px"};
     margin-right: ${(props)=> props.$label ? "15px" : "0px"};
     margin-bottom: 5px;
