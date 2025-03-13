@@ -4,9 +4,11 @@ import {PageItemWrapper as WorkoutItemWrapper} from "../../helpers/PageItemWrapp
 import { Button as WorkoutButton } from "../../ui/Button/index.tsx";
 import arrowIcon from "../../../assets/images/arrowIcon.svg"
 
-export const StyledWorkoutButton = styled(WorkoutButton)`
-    border-radius: 99px;
-    width: 178px;
+export const StyledWorkoutButton = styled(WorkoutButton)<{$width?:string, $radius?: string}>`
+    border-radius: ${(props) => props.$radius ? props.$radius: "20px"};
+    /* padding: 10px; */
+    width: ${(props)=> props.$width ? props.$width : "178px"};
+    /* height: 46px; */
     box-shadow: 0 10px 22px 0 rgba(149, 173, 254, 0.3);
     background-color: ${(props) =>`linear-gradient(317deg, ${props.theme.buttonColor} 0%, #9dceff 100%)`};
 `
@@ -23,10 +25,15 @@ export const Workout = styled(Section)`
     align-items: center;
 `
 
-export const Wrapper = styled(WorkoutItemWrapper)`
+export const Wrapper = styled(WorkoutItemWrapper)<{$width?:string}>`
     display: flex;
     flex-direction: ${(props)=>props.flexDirection ? props.flexDirection : "column"};
     align-items: ${(props)=>props.alignItems ? props.alignItems: "flex-start"};
+`
+
+export const WrapperButtons = styled(Wrapper)`
+    justify-content: space-evenly;
+    margin: 10px 10px;
 `
 
 export const WarmCard = styled(Wrapper)`

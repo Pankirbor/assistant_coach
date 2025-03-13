@@ -1,11 +1,24 @@
 import axios from "axios";
 import React, { useEffect, useState, useMemo } from "react";
 import { Title } from "../../ui/Title/styles.tsx";
-import { Workout, Wrapper, StyledWorkoutButton, WarmCard } from "./styles.tsx";
+import { Workout, Wrapper, WrapperButtons, StyledWorkoutButton, WarmCard } from "./styles.tsx";
 import Accordion from "../../Accordion/index.tsx";
 import type { WorkoutProps, ExerciseProps, ExerciseResultProps, TrainingSegmentsProps} from "../../../types/data/dataTypes.ts";
 import { P } from "../../styled/index.tsx";
+import { PopUp } from "../../PopUp/index.tsx";
 
+export const WellDoneOrNeedToFinish:React.FC<{isWellDone: boolean, onClick:()=>void}> = ({isWellDone, onClick}) => {
+    return (
+        <>
+        {isWellDone ? <P>Поздравляю, вы хорошо познимались. Закончить тренировку?</P>
+        : <P>Поздравляю, вы хорошо познимались. Закончить тренировку?</P>}
+        <WrapperButtons flexDirection="row" alignItems="center" $width="200px">
+          <StyledWorkoutButton onClick={onClick} $width="70px">Yes</StyledWorkoutButton>
+          <StyledWorkoutButton onClick={onClick}  $width="70px">No</StyledWorkoutButton>
+        </WrapperButtons>
+        </>
+    )
+}
 
 
 export const CurrentWorkoutPage:React.FC= () => {
@@ -13,6 +26,7 @@ export const CurrentWorkoutPage:React.FC= () => {
     const [results, setResults] = useState<ExerciseResultProps[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [isShowPopUp, setIsShowPopUp] = useState(false);
 
     // Загрузка текущей тренировки
     useEffect(() => {
@@ -99,6 +113,8 @@ export const CurrentWorkoutPage:React.FC= () => {
         console.log(finalResult);
         console.log(workout);
         console.log(JSON.stringify(workout));
+        setIsShowPopUp(true);
+        // alert(`${JSON.stringify({results: results})}` );
       } catch (err) {
         setError("Ошибка при сохранении результатов");
       }
@@ -140,7 +156,10 @@ export const CurrentWorkoutPage:React.FC= () => {
                   <Accordion items={items} />
                 </Wrapper>
               </Wrapper>
-                <StyledWorkoutButton onClick={handleSubmit}>Завершить</StyledWorkoutButton>
+              <StyledWorkoutButton onClick={handleSubmit}>Завершить</StyledWorkoutButton>
+              <PopUp isShow={isShowPopUp} onClose={() => setIsShowPopUp(false)} title="Завершение тренировки">
+                <WellDoneOrNeedToFinish onClick={() => setIsShowPopUp(false)} isWellDone={true}/>
+              </PopUp>
             </Workout>
         </>
     )
