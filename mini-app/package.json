@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.5",
     "axios": "^1.7.9",
     "cra-template-typescript": "1.2.0",
@@ -37,8 +38,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://web:8000/",
-  "devDependencies": {
-    "@gravity-ui/uikit": "^7.5.0"
-  }
+  "proxy": "http://web:8000/"
 }

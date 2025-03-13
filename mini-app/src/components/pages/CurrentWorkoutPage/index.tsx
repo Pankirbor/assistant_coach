@@ -6,18 +6,20 @@ import Accordion from "../../Accordion/index.tsx";
 import type { WorkoutProps, ExerciseProps, ExerciseResultProps, TrainingSegmentsProps} from "../../../types/data/dataTypes.ts";
 import { P } from "../../styled/index.tsx";
 import { PopUp } from "../../PopUp/index.tsx";
+import InfoIcon from '@mui/icons-material/Info';
+import { IconButton } from "@mui/material";
 
 export const WellDoneOrNeedToFinish:React.FC<{isWellDone: boolean, onClick:()=>void}> = ({isWellDone, onClick}) => {
     return (
         <>
         {isWellDone ? <P>Поздравляю, вы хорошо познимались. Закончить тренировку?</P>
-        : <P>Поздравляю, вы хорошо познимались. Закончить тренировку?</P>}
+        : <P>У вас остались незаполненные поля, вы уверены, что хотите закончить тренировку?</P>}
         <WrapperButtons flexDirection="row" alignItems="center" $width="200px">
           <StyledWorkoutButton onClick={onClick} $width="70px">Yes</StyledWorkoutButton>
           <StyledWorkoutButton onClick={onClick}  $width="70px">No</StyledWorkoutButton>
         </WrapperButtons>
         </>
-    )
+  )
 }
 
 
@@ -27,6 +29,7 @@ export const CurrentWorkoutPage:React.FC= () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [isShowPopUp, setIsShowPopUp] = useState(false);
+    const [isWellDone, setIsWellDone] = useState(true)
 
     // Загрузка текущей тренировки
     useEffect(() => {
@@ -103,6 +106,14 @@ export const CurrentWorkoutPage:React.FC= () => {
           acc.set(result.exerciseId, result.sets)
           return acc
         }, new Map())
+
+        for (const key of finalResult.keys()) {
+          if (finalResult.get(key).some((value)=> Boolean(value.actual_reps) === false)) {
+            setIsWellDone(false)
+            break
+          }
+        }
+
         workout.training_segments.forEach(segment => {
           segment.exercises.forEach(
             exersice => {
@@ -110,8 +121,9 @@ export const CurrentWorkoutPage:React.FC= () => {
             }
           );
         });
+
+
         console.log(finalResult);
-        console.log(workout);
         console.log(JSON.stringify(workout));
         setIsShowPopUp(true);
       } catch (err) {
@@ -145,7 +157,12 @@ export const CurrentWorkoutPage:React.FC= () => {
         <>
             <Workout>
               <Wrapper>
-                <Title marginBottom="30" size="big">{workout.tags.map((tag) => tag.name).join(", ")}</Title>
+                <Title marginBottom="30" size="big">
+                  {workout.tags.map((tag) => tag.name).join(", ")}
+                  <IconButton aria-label="info">
+                    <InfoIcon />
+                  </IconButton>
+                  </Title>
                 <WarmCard>
                   <P>Необходимо сделать два разминочных подхода:</P>
                   <P>1. 25% от рабочего веса</P>
@@ -157,7 +174,7 @@ export const CurrentWorkoutPage:React.FC= () => {
               </Wrapper>
               <StyledWorkoutButton onClick={handleSubmit}>Завершить</StyledWorkoutButton>
               <PopUp isShow={isShowPopUp} onClose={() => setIsShowPopUp(false)} title="Завершение тренировки">
-                <WellDoneOrNeedToFinish onClick={() => setIsShowPopUp(false)} isWellDone={true}/>
+                <WellDoneOrNeedToFinish onClick={() => setIsShowPopUp(false)} isWellDone={isWellDone}/>
               </PopUp>
             </Workout>
         </>
