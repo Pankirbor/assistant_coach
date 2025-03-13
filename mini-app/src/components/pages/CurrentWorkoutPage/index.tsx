@@ -114,7 +114,6 @@ export const CurrentWorkoutPage:React.FC= () => {
         console.log(workout);
         console.log(JSON.stringify(workout));
         setIsShowPopUp(true);
-        // alert(`${JSON.stringify({results: results})}` );
       } catch (err) {
         setError("Ошибка при сохранении результатов");
       }
