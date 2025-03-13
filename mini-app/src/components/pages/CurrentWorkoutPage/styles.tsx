@@ -4,7 +4,7 @@ import {PageItemWrapper as WorkoutItemWrapper} from "../../helpers/PageItemWrapp
 import { Button as WorkoutButton } from "../../ui/Button/index.tsx";
 import arrowIcon from "../../../assets/images/arrowIcon.svg"
 
-export const StyledWorkoutButton = styled(WorkoutButton)<{$width?:string, $radius?: string}>`
+export const StyledWorkoutButton = styled(WorkoutButton)<{$width?:string, $radius?: string, disabled?: boolean}>`
     border-radius: ${(props) => props.$radius ? props.$radius: "20px"};
     width: ${(props)=> props.$width ? props.$width : "178px"};
     box-shadow: 0 10px 22px 0 rgba(149, 173, 254, 0.3);
