@@ -29,7 +29,8 @@ export const CurrentWorkoutPage:React.FC= () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [isShowPopUp, setIsShowPopUp] = useState(false);
-    const [isWellDone, setIsWellDone] = useState(true)
+    const [isWellDone, setIsWellDone] = useState(true);
+    const [isShowWarm, setIsShowWarm] = useState(false);
 
     // Загрузка текущей тренировки
     useEffect(() => {
@@ -159,20 +160,22 @@ export const CurrentWorkoutPage:React.FC= () => {
               <Wrapper>
                 <Title marginBottom="30" size="big">
                   {workout.tags.map((tag) => tag.name).join(", ")}
-                  <IconButton aria-label="info">
+                  <IconButton onClick={() => setIsShowWarm((isShowWarm)=> !isShowWarm)} aria-label="info">
                     <InfoIcon />
                   </IconButton>
-                  </Title>
-                <WarmCard>
-                  <P>Необходимо сделать два разминочных подхода:</P>
-                  <P>1. 25% от рабочего веса</P>
-                  <P>2. 50% от рабочего веса</P>
-                </WarmCard>
+                </Title>
+                <PopUp title="Разминка" isShow={isShowWarm} onClose={() => setIsShowWarm(false)}>
+                  <WarmCard>
+                    <P>Необходимо сделать два разминочных подхода:</P>
+                    <P>1. 25% от рабочего веса</P>
+                    <P>2. 50% от рабочего веса</P>
+                  </WarmCard>
+                </PopUp>
                 <Wrapper>
                   <Accordion items={items} />
                 </Wrapper>
               </Wrapper>
-              <StyledWorkoutButton onClick={handleSubmit}>Завершить</StyledWorkoutButton>
+              <StyledWorkoutButton disabled={isShowPopUp} onClick={handleSubmit}>Завершить</StyledWorkoutButton>
               <PopUp isShow={isShowPopUp} onClose={() => setIsShowPopUp(false)} title="Завершение тренировки">
                 <WellDoneOrNeedToFinish onClick={() => setIsShowPopUp(false)} isWellDone={isWellDone}/>
               </PopUp>
