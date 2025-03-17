@@ -187,9 +187,9 @@ class SetAdmin(admin.ModelAdmin):
     """
 
     list_display = [
-        "excercise",
+        "exercise",
         "target_weight",
-        "terget_reps",
+        "target_reps",
         "actual_weight",
         "actual_reps",
         "comment",

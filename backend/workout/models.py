@@ -3,6 +3,11 @@ from django.db import models
 
 from users.models import CustomUser
 
+import logging  #! надо будет убрать
+
+logger = logging.getLogger(__name__)
+logger.debug(f"Проверка логгера")
+
 
 class Exercise(models.Model):
     """
@@ -259,12 +264,12 @@ class ExerciseTrainingSegment(models.Model):
     class Meta:
         verbose_name = "Упражнение и блок"
         verbose_name_plural = "Упражнения и блоки"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["training_segment", "exercise"],
-                name="unique_exercise_training_segment",
-            ),
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=["training_segment", "exercise"],
+        #         name="unique_exercise_training_segment",
+        #     ),
+        # ]
 
     def __str__(self):
         """
@@ -284,10 +289,12 @@ class ExerciseTrainingSegment(models.Model):
         вычисляет лучший результат среди всех результатов
         тренировочного сегмента и сохраняет его.
         """
+        logger.debug(f"Обновление лучшего результата упражнения ")
         self.is_done = True
         best_result = self.results.aggregate(models.Max("actual_weight"))[
             "actual_weight__max"
         ]
+        logger.debug(f"Обновление лучшего результата упражнения {best_result}")
         self.best_result = best_result
         self.save()
 
@@ -301,7 +308,7 @@ class Set(models.Model):
     а также комментарии и статус последнего подхода.
     """
 
-    excercise = models.ForeignKey(
+    exercise = models.ForeignKey(
         ExerciseTrainingSegment, on_delete=models.CASCADE, related_name="results"
     )
     target_weight = models.DecimalField(
@@ -312,7 +319,7 @@ class Set(models.Model):
         blank=True,
         null=True,
     )
-    terget_reps = models.IntegerField(
+    target_reps = models.IntegerField(
         "Планируемое кол-во повторений",
         blank=True,
         null=True,
@@ -356,6 +363,8 @@ class Set(models.Model):
             *args: Позиционные аргументы для метода save.
             **kwargs: Именованные аргументы для метода save.
         """
+        logger.debug(f"Сохранение сета")
         super().save(*args, **kwargs)
         if self.is_last:
+            logger.debug(f"Обнаружен последний подход")
             self.excercise.update_best_result()

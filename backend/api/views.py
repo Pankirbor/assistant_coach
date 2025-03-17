@@ -5,16 +5,22 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
 from .serializers import (
+    ExerciseTrainingSegmentCreateSerializer,
     UserSerializer,
     WorkoutSerializer,
     SetSerializer,
     SetCreateSerializer,
     ExerciseTrainingSegmentSerializer,
+    WorkoutCreateSerializer,
 )
 
 from . import description_points
 from workout.models import Set, Workout, ExerciseTrainingSegment
 from users.models import CustomUser
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @extend_schema_view(
@@ -62,7 +68,28 @@ class WorkoutViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Workout.objects.all()
-    serializer_class = WorkoutSerializer
+    # serializer_class = WorkoutSerializer
+
+    def get_serializer_class(self):
+        if self.action in ("list", "retrieve"):
+            return WorkoutSerializer
+
+        return WorkoutCreateSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        logger.debug(f"Текущий объект {instance}")
+        logger.debug(f"Текущий объект {request.data}")
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        try:
+            serializer.is_valid(
+                raise_exception=True
+            )  # Это проверяет данные и вызывает ValidationError, если данные некорректные
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Ошибка при обновлении тренировки {instance.id}: {e}")
+            # raise serializers.ValidationError(f"Ошибка при обновлении тренировки: {e}")
 
     @extend_schema(summary="Получение запланированой тренировки на сегодня.")
     @action(
@@ -113,7 +140,13 @@ class ExerciseTrainingSegmentViewSet(viewsets.ModelViewSet):
     """
 
     queryset = ExerciseTrainingSegment.objects.all()
-    serializer_class = ExerciseTrainingSegmentSerializer
+    # serializer_class = ExerciseTrainingSegmentSerializer
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action in ("list", "retrieve"):
+            return ExerciseTrainingSegmentSerializer
+
+        return ExerciseTrainingSegmentCreateSerializer
 
 
 @extend_schema_view(
@@ -157,7 +190,7 @@ class SetViewSet(viewsets.ModelViewSet):
         Если действие - это получение списка или детальной информации (retrieve),
         используется SetSerializer. В противном случае используется SetCreateSerializer.
         """
-        if self.action in ("list", "retrive"):
+        if self.action in ("list", "retrieve"):
             return SetSerializer
 
         return SetCreateSerializer
