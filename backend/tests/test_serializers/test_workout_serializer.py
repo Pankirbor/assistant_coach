@@ -7,33 +7,8 @@ from workout.models import ExerciseTrainingSegment, TrainingSegment, Workout
 
 @pytest.mark.django_db
 def test_update_workout_with_new_sets(
-    user, workout, training_segment, exercise_training_segment
+    user, workout, training_segment, exercise_training_segment, update_data
 ):
-    print(f"WORKOUT OBJECT {workout=}")
-    # Данные для обновления тренировки
-    update_data = {
-        "id": workout.id,
-        "date": "2023-01-02",
-        "training_segments": [
-            {
-                "id": training_segment.id,
-                "timing": "00:15:00",
-                "exercises": [
-                    {
-                        "id": exercise_training_segment.id,
-                        "results": [
-                            {"actual_weight": 95.0, "actual_reps": 9, "is_last": True},
-                            {
-                                "actual_weight": 100.0,
-                                "actual_reps": 10,
-                                "is_last": False,
-                            },
-                        ],
-                    }
-                ],
-            }
-        ],
-    }
 
     client = APIClient()
     client.force_authenticate(user=user)
@@ -51,12 +26,8 @@ def test_update_workout_with_new_sets(
         id=exercise_training_segment.id
     )
     assert updated_exercise_segment.results.count() == 2
-
     # Ожидаемые значения сетов
-    expected_sets = [
-        {"actual_weight": 95.0, "actual_reps": 9, "is_last": True},
-        {"actual_weight": 100.0, "actual_reps": 10, "is_last": False},
-    ]
+    expected_sets = update_data["training_segments"][0]["exercises"][0]["results"]
 
     # Проверка значений сетов в цикле
     sets = updated_exercise_segment.results.all()

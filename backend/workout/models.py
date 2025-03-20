@@ -349,7 +349,7 @@ class Set(models.Model):
             str: Форматированное строковое представление объекта
             с указанием названия упражнения.
         """
-        return f"Подход для {self.excercise.exercise.name}"
+        return f"Подход для {self.exercise.exercise.name}"
 
     def save(self, *args, **kwargs):
         """
