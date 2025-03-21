@@ -192,7 +192,9 @@ class ExerciseTrainingSegmentSerializer(serializers.ModelSerializer):
 
 class ExerciseTrainingSegmentCreateSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
-    exercise = serializers.PrimaryKeyRelatedField(queryset=Exercise.objects.all())
+    exercise = ExerciseSerializer(
+        read_only=True
+    )  # serializers.PrimaryKeyRelatedField(queryset=Exercise.objects.all())
     training_segment = serializers.PrimaryKeyRelatedField(
         queryset=TrainingSegment.objects.all()
     )
