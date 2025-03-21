@@ -23,11 +23,16 @@ export interface SetProps {
     is_last?: boolean;
 }
 
-export interface ExerciseProps {
-    id: number;
+export interface ExerciseInfoProps {
     exercise_id: number;
     name: string;
     video_link: string;
+    description: string;
+}
+
+export interface ExerciseProps {
+    id: number;
+    exercise: ExerciseInfoProps;
     timing: string;
     target_weight: number;
     target_reps: number;

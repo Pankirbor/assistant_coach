@@ -36,7 +36,7 @@ export const CurrentWorkoutPage:React.FC= () => {
     useEffect(() => {
         const fetchWorkout = async () => {
         try {
-            const response = await axios.get("/api/workouts/2");
+            const response = await axios.get("/api/workouts/3");
             setWorkout(response.data);
             initializeResults(response.data.training_segments.map((segment:TrainingSegmentsProps) => segment.exercises).flat());
         } catch (err) {
@@ -100,9 +100,6 @@ export const CurrentWorkoutPage:React.FC= () => {
       if (!workout) return;
 
       try {
-        // await axios.put(`/api/workout/${workout.id}`, {
-        //   results: results,
-        // });
         const finalResult = results.reduce((acc, result) => {
           acc.set(result.exerciseId, result.sets)
           return acc
@@ -123,11 +120,16 @@ export const CurrentWorkoutPage:React.FC= () => {
           );
         });
 
+        const response = await axios.put(`/api/workouts/${workout.id}/`, {
+          ...workout,
+        });
+        console.log('Данные обновлены:', response.data);
 
         console.log(finalResult);
         console.log(JSON.stringify(workout));
         setIsShowPopUp(true);
       } catch (err) {
+        console.error('Ошибка при обновлении:', error);
         setError("Ошибка при сохранении результатов");
       }
     };
@@ -140,7 +142,7 @@ export const CurrentWorkoutPage:React.FC= () => {
       return workout.training_segments
         .map((segment) => segment.exercises
           .map((exercise: ExerciseProps, index) => {
-                return {title: exercise.name,
+                return {title: exercise.exercise.name,
                         content: {...results[index], "targetWeight": exercise.target_weight, "targetReps": exercise.target_reps},
                         onSetChange: handleSetChange,
                       }
