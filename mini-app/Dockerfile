@@ -11,7 +11,6 @@ FROM node:18 as build
 
 # Шаг 2: Установите рабочую директорию
 WORKDIR /usr/src/app
-
 # Шаг 3: Копируйте package.json и package-lock.json
 COPY package*.json ./
 
