@@ -54,6 +54,7 @@ services:
         depends_on:
             - web
             - mini_app
+            - nginx
 
 
 volumes:

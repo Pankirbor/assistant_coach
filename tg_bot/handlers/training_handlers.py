@@ -12,7 +12,9 @@ async def open_training_app(message: types.Message):
             [
                 types.KeyboardButton(
                     text="Открыть мини-приложение",
-                    web_app=types.WebAppInfo(url="https://localhost:3000"),
+                    web_app=types.WebAppInfo(
+                        url="https://chastely-revived-grayling.cloudpub.ru"
+                    ),
                 )
             ]
         ],
