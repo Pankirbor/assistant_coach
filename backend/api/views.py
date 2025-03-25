@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -45,6 +46,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("telegram_id",)
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     telegram_id = self.request.query_params.get("telegram_id")
+    #     if telegram_id:
+    #         queryset = queryset.filter(telegram_id=telegram_id)
+
+    #     return queryset
 
 
 @extend_schema_view(
