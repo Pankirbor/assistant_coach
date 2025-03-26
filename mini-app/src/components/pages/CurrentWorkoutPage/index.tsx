@@ -31,12 +31,24 @@ export const CurrentWorkoutPage:React.FC= () => {
     const [isShowPopUp, setIsShowPopUp] = useState(false);
     const [isWellDone, setIsWellDone] = useState(true);
     const [isShowWarm, setIsShowWarm] = useState(false);
+    const [telegramId, setTelegramId] = useState<string | null>(null);
 
-    // Загрузка текущей тренировки
     useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
+        console.log(`LOG ${queryParams.get('telegramId')}`)
+        const tgid = queryParams.get('telegramId');
+        if (tgid) {
+            setTelegramId(tgid);
+        }
+    }, []);
+
+    //Загрузка текущей тренировки
+    useEffect(() => {
+
+        if (!telegramId) return; // не делаем запрос если ID не установлен
         const fetchWorkout = async () => {
         try {
-            const response = await axios.get("/api/workouts/3");
+            const response = await axios.get(`/api/workouts/next_workout/?telegram_id=${telegramId}`);
             setWorkout(response.data);
             initializeResults(response.data.training_segments.map((segment:TrainingSegmentsProps) => segment.exercises).flat());
         } catch (err) {
@@ -48,12 +60,13 @@ export const CurrentWorkoutPage:React.FC= () => {
         };
 
         fetchWorkout();
-    }, []);
+    }, [telegramId,]);
 
-    useEffect(()=>{
-      console.log(workout)
-      console.log("workout")
-    });
+//! Отладочная информация
+    // useEffect(()=>{
+    //   console.log(workout)
+    //   console.log("workout")
+    // });
 
     // Инициализация структуры для результатов
     const initializeResults = (exercises: ExerciseProps[]) => {

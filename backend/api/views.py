@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema_view, extend_schema
@@ -115,10 +115,19 @@ class WorkoutViewSet(viewsets.ModelViewSet):
         Этот метод обрабатывает GET-запрос и возвращает
         последнюю запланированную тренировку.
         """
-        user = request.user
+
+        telegram_id = self.request.query_params.get("telegram_id")
+        if telegram_id:
+            user = CustomUser.objects.filter(telegram_id=telegram_id).first()
+            logger.debug(f"Current User2 {user}")
+
         next_workout = Workout.objects.filter(user=user).last()
-        serializer = self.get_serializer(next_workout)
-        return Response(serializer.data)
+        logger.debug(f"Current next_workout {next_workout}")
+        if next_workout:
+            serializer = self.get_serializer(next_workout)
+            return Response(serializer.data)
+
+        return Response("Not trainings", status=status.HTTP_200_OK)
 
 
 @extend_schema_view(
