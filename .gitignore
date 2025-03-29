@@ -137,3 +137,6 @@ dmypy.json
 draft_file.json
 localhost-key.pem
 localhost.pem
+
+/static
+static

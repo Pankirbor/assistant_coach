@@ -12,7 +12,9 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./ ./
+RUN python manage.py collectstatic --no-input
 # Запуск тестов при сборке
 RUN pytest
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD [ "gunicorn", "assistant.wsgi:application", "--bind", "0:8000"]
