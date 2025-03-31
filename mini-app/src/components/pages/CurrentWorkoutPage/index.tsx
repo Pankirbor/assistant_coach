@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Title } from "../../ui/Title/styles.tsx";
 import { Workout, Wrapper, WrapperButtons, StyledWorkoutButton, WarmCard } from "./styles.tsx";
 import Accordion from "../../Accordion/index.tsx";
@@ -15,8 +15,8 @@ export const WellDoneOrNeedToFinish:React.FC<{isWellDone: boolean, onClick:()=>v
         {isWellDone ? <P>Поздравляю, вы хорошо познимались. Закончить тренировку?</P>
         : <P>У вас остались незаполненные поля, вы уверены, что хотите закончить тренировку?</P>}
         <WrapperButtons flexDirection="row" alignItems="center" $width="200px">
-          <StyledWorkoutButton onClick={onClick} $width="70px">Yes</StyledWorkoutButton>
-          <StyledWorkoutButton onClick={onClick}  $width="70px">No</StyledWorkoutButton>
+          <StyledWorkoutButton onClick={onClick} $width="70px">Да</StyledWorkoutButton>
+          <StyledWorkoutButton onClick={onClick}  $width="70px">Нет</StyledWorkoutButton>
         </WrapperButtons>
         </>
   )
@@ -30,7 +30,7 @@ export const CurrentWorkoutPage:React.FC= () => {
     const [error, setError] = useState("");
     const [isShowPopUp, setIsShowPopUp] = useState(false);
     const [isWellDone, setIsWellDone] = useState(true);
-    const [isShowWarm, setIsShowWarm] = useState(false);
+    const [isWarmupVisible, IsWarmupVisible] = useState(false);
     const [telegramId, setTelegramId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -87,26 +87,24 @@ export const CurrentWorkoutPage:React.FC= () => {
     };
 
     // Обработчик изменения данных подхода
-    const handleSetChange = (
-      exerciseId: number,
-      setIndex: number,
-      field: string,
-      value: string
-    ) => {
-      setResults((prevResults) =>
-        prevResults.map((exerciseResult) => {
-          if (exerciseResult.exerciseId === exerciseId) {
-            const newSets = [...exerciseResult.sets];
-            newSets[setIndex] = {
-              ...newSets[setIndex],
-              [field]: Number(value), //* добавить обработку для is_last
-            };
-            return { ...exerciseResult, sets: newSets};
-          }
-          return exerciseResult;
-        })
-      );
-    };
+    const handleSetChange = useCallback(
+        (exerciseId: number, setIndex: number, field: string, value: string) => {
+            setResults((prevResults) =>
+                prevResults.map((exerciseResult) => {
+                    if (exerciseResult.exerciseId === exerciseId) {
+                        const newSets = [...exerciseResult.sets];
+                        newSets[setIndex] = {
+                            ...newSets[setIndex],
+                            [field]: Number(value), //* добавить обработку для is_last
+                        };
+                        return { ...exerciseResult, sets: newSets };
+                    }
+                    return exerciseResult;
+                })
+            );
+        },
+        [setResults]
+    );
 
     //* Отправка результатов
     const handleSubmit = async () => {
@@ -175,11 +173,11 @@ export const CurrentWorkoutPage:React.FC= () => {
               <Wrapper>
                 <Title marginBottom="30" size="big">
                   {workout.tags.map((tag) => tag.name).join(", ")}
-                  <IconButton onClick={() => setIsShowWarm((isShowWarm)=> !isShowWarm)} aria-label="info">
+                  <IconButton onClick={() => IsWarmupVisible((isWarmupVisible)=> !isWarmupVisible)} aria-label="info">
                     <InfoIcon />
                   </IconButton>
                 </Title>
-                <PopUp title="Разминка" isShow={isShowWarm} onClose={() => setIsShowWarm(false)}>
+                <PopUp title="Разминка" isShow={isWarmupVisible} onClose={() => IsWarmupVisible(false)}>
                   <WarmCard>
                     <P>Необходимо сделать два разминочных подхода:</P>
                     <P>1. 25% от рабочего веса</P>

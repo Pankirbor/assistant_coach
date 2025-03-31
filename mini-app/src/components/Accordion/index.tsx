@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Li, P, Ul } from '../styled/index.tsx';
+import { Li, Ul } from '../styled/index.tsx';
 import { Content, ExerciseSetsOl, TitleExerciseButton } from '../pages/CurrentWorkoutPage/styles.tsx';
 import { Title } from '../ui/Title/styles.tsx';
 import { Set, SetRead } from '../Set/index.tsx';
