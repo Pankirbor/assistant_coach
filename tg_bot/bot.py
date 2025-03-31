@@ -1,16 +1,30 @@
 import asyncio
 import logging
-import os
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.types import BotCommand, MenuButtonDefault
 
+from config import settings
 from handlers import commands_router, training_router
+from lexicon import LEXICON_COMMANDS
 
-API_TOKEN = os.environ.get(
-    "BOT_TOKEN", "7767038065:AAHT-I6mUtbyolIyVCsmJvac0kwQFbybFJw"
-)
 
 logger = logging.getLogger(__name__)
+
+
+async def set_command_menu(bot: Bot):
+    """Установщик меню команд.
+
+    :param Bot bot: объект телеграмм бота
+    """
+    commands = [
+        BotCommand(command=command, description=description)
+        for command, description in LEXICON_COMMANDS.items()
+    ]
+    await bot.set_my_commands(commands)
+    await bot.set_chat_menu_button(menu_button=MenuButtonDefault())
 
 
 async def main():
@@ -22,8 +36,12 @@ async def main():
         "[%(asctime)s] - %(name)s - %(message)s",
     )
     logger.info("Starting bot")
-    bot = Bot(token=API_TOKEN)
+    bot = Bot(
+        token=settings.BOT_TOKEN,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+    )
     dp = Dispatcher()
+    dp.startup.register(set_command_menu)
     dp.include_router(commands_router)
     dp.include_router(training_router)
 
